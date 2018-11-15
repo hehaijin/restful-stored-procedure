@@ -1,5 +1,15 @@
-#### Run npm install 
+##Restful-TSQL
 
+This project is to automatically provide restful API for stored procedures in a SQL Server database.
+
+Libraries like snowman that automatically restify databases usually do not include stored procedures, which is the purpose of this package.
+
+The package will provide an easy API for accessing stored procedures in a SQL Server database.
+
+
+
+###How to run the package
+####database config
 1) config file
 create Config.js under the root folder. add:
 ```
@@ -19,10 +29,11 @@ run node
 
 	to be added.
 
+### running
+node index.js
 
 
-
-#### APIs: 
+### APIs: 
 ```
     POST /schema.procedureName
     Json body: 
@@ -32,7 +43,7 @@ run node
 	
 
 
-features to be added.	
+###features to be added.	
 
 ##### Logging: 
  log every request, result with morgan.
