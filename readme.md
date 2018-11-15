@@ -1,4 +1,4 @@
-## Restful-TSQL
+# Restful-TSQL
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
 
@@ -9,7 +9,7 @@ The package will provide an easy API for accessing stored procedures in a SQL Se
 
 
 ### How to run the package
-#### database config
+#### Database config
 1. config file
 create Config.js under the root folder. add:
 ```
@@ -24,12 +24,12 @@ module.exports=  {
 
 2. command line parameters.
 
-
 	to be added.
 
-### running
+### Running
+```
 node index.js
-
+```
 
 ### APIs: 
 ```
@@ -37,11 +37,11 @@ node index.js
     Json body: 
     {"parameters": {"param1": value1, "param2": value2  } } 
 ```    
-execute a stored procedure with given parameters.
+Execute a stored procedure with given parameters.
 	
 
 
-### features to be added.	
+### Features to be added.	
 
 ##### Logging: 
  log every request, result with morgan.
