@@ -1,16 +1,16 @@
-##### Run npm install 
+#### Run npm install 
 
 1) config file
 create Config.js under the root folder. add:
-
->module.exports=  {
->    user: "user",
->    password: "password",
->    "server": "server",
->    "database": "your database",
->    port: 1433
->}
-
+```
+module.exports=  {
+    user: "user",
+    password: "password",
+    "server": "server",
+    "database": "your database",
+    port: 1433
+}
+```
 run node
 
 
@@ -22,11 +22,12 @@ run node
 
 
 
-##### APIs: 
+#### APIs: 
+```
     POST /schema.procedureName
     Json body: 
     {"parameters": {"param1": value1, "param2": value2  } } 
-    
+```    
     execute a stored procedure with given parameters.
 	
 
