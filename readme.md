@@ -1,19 +1,23 @@
-##### Run
-npm install 
+##### Run npm install 
 
 1) config file
 create Config.js under the root folder. add:
-module.exports=  {
-    user: "user",
-    password: "password",
-    "server": "server",
-    "database": "your database",
-    port: 1433
-}
 
-2) command line
+>module.exports=  {
+>    user: "user",
+>    password: "password",
+>    "server": "server",
+>    "database": "your database",
+>    port: 1433
+>}
 
-to be added.
+run node
+
+
+2) command line parameters.
+
+
+	to be added.
 
 
 
@@ -26,8 +30,7 @@ to be added.
     execute a stored procedure with given parameters.
 	
 
-	
-	
+
 features to be added.	
 
 ##### Logging: 
