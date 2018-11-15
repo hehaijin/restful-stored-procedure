@@ -10,7 +10,7 @@ The package will provide an easy API for accessing stored procedures in a SQL Se
 
 ### How to run the package
 #### database config
-1) config file
+1. config file
 create Config.js under the root folder. add:
 ```
 module.exports=  {
@@ -21,10 +21,8 @@ module.exports=  {
     port: 1433
 }
 ```
-run node
 
-
-2) command line parameters.
+2. command line parameters.
 
 
 	to be added.
@@ -39,7 +37,7 @@ node index.js
     Json body: 
     {"parameters": {"param1": value1, "param2": value2  } } 
 ```    
-    execute a stored procedure with given parameters.
+execute a stored procedure with given parameters.
 	
 
 
