@@ -1,0 +1,23 @@
+{
+  "name": "restful-tsql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "debug": "^3.1.0",
+    "morgan": "^1.9.0",
+    "mssql": "^4.0.1",
+    "nodemon": "^1.18.3",
+    "restify": "^7.2.0",
+    "underscore": "^1.9.1",
+    "winston": "^3.0.0"
+  }
+}
