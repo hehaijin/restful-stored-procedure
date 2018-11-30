@@ -8,10 +8,11 @@ console.log("starting");
 
 program.version(pkg.version)
     .description(pkg.description)
-    .usage('[options] <command> [...]')
+    .usage('[options]')
     .option('-c, --config <filename>', 'file name','config.json')
     .option('-p, --port <portnumber>', 'http port number', 80)
 
+console.log(process.argv);    
 program.parse(process.argv);
 console.log(program.args)
 if(!program.args.length){

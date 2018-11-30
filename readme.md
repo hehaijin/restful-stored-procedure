@@ -1,6 +1,9 @@
 # Restful-Stored-Procedure
 ## for SQL Server(TSQL)
 
+
+# in development ...
+
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
 
 Libraries like Sandman that automatically restify databases usually do not include stored procedures, which is the purpose of this package.
