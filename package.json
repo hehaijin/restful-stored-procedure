@@ -9,7 +9,7 @@
     "watch": "nodemon index.js"
   },
   "bin": {
-    "rest-sp": "./index.js"
+    "rest-sp": "node ./index.js"
   },
   "author": "hehaijin",
   "license": "ISC",
