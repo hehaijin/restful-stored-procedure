@@ -1,6 +1,6 @@
 {
-  "name": "restful-tsql",
-  "version": "1.0.0",
+  "name": "restful-stored-procedure",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
