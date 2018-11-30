@@ -10,11 +10,17 @@ The package will provide an easy API for accessing stored procedures in a SQL Se
 
 
 ### How to run the package
-#### Database config
-1. config file
-create Config.js under the root folder. add:
+#### Install globally
 ```
-module.exports=  {
+npm install restful-stored-procedure -g
+```
+
+#### Usage
+
+1. config file
+create config.json 
+```
+{
     "user": "user",
     "password": "password",
     "server": "server",
@@ -23,14 +29,11 @@ module.exports=  {
 }
 ```
 
-2. command line parameters.
+2. Run the program
 
-	to be added.
+	rest-sp -f path/config.json -p httpport
+	
 
-### Running
-```
-node index.js
-```
 
 ### APIs: 
 ```
@@ -40,7 +43,7 @@ node index.js
 ```    
 Execute a stored procedure with given parameters.
 	
-
+  
 
 ### Features to be added.	
 

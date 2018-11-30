@@ -1,8 +1,8 @@
 'use strict'
-const config= require('../Config');  // specify database and credentials
+const config = require('../Config');  // specify database and credentials
 const logger = require('winston');
+const fs= require('fs');
 const debug = require('debug')('ws:db');
-
 const sql = require('mssql');
 logger.info('connecting to ' + config.server);
 

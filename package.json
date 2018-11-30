@@ -4,23 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./bin/start.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon index.js"
   },
   "bin": {
-    "rest-sp": "./index.js"
+    "rest-sp": "./bin/start.js"
   },
   "author": "hehaijin",
   "license": "ISC",
   "dependencies": {
+    "commander": "^2.19.0",
     "cors": "^2.8.4",
     "debug": "^3.1.0",
-    "morgan": "^1.9.0",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
     "mssql": "^4.0.1",
-    "nodemon": "^1.18.3",
-    "restify": "^7.2.0",
     "underscore": "^1.9.1",
     "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.7"
   }
 }
