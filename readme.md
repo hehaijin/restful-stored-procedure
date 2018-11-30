@@ -1,4 +1,5 @@
-# Restful-TSQL
+# Restful-Stored-Procedure
+## for SQL Server(TSQL)
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
 
@@ -14,11 +15,11 @@ The package will provide an easy API for accessing stored procedures in a SQL Se
 create Config.js under the root folder. add:
 ```
 module.exports=  {
-    user: "user",
-    password: "password",
+    "user": "user",
+    "password": "password",
     "server": "server",
     "database": "your database",
-    port: 1433
+    "port": 1433
 }
 ```
 
