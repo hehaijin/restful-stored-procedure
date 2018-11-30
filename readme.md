@@ -3,7 +3,7 @@
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
 
-Libraries like snowman that automatically restify databases usually do not include stored procedures, which is the purpose of this package.
+Libraries like Sandman that automatically restify databases usually do not include stored procedures, which is the purpose of this package.
 
 The package will provide an easy API for accessing stored procedures in a SQL Server database.
 
