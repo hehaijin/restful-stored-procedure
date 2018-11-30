@@ -10,7 +10,7 @@
   },
   "bin":{
   "rest-sp":"./index.js"
-  }
+  },
   "author": "hehaijin",
   "license": "ISC",
   "dependencies": {
