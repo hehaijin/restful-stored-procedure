@@ -1,2 +1,3 @@
 
-module.exports = require('./src/server.js');
+const createRoutes = require('./src/router.js');
+module.exports =createRoutes;

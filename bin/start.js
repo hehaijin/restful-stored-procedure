@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 'use strict'
-const fs=requrie('fs');
+const fs=require('fs');
 const program = require('commander');
 const express = require('express');
 const cors = require('cors');
 const server = express();
-const createRoutes = require('./router');
+const createRoutes = require('../index');
+const logger= require('winston');
 
 
 console.log("starting");
@@ -27,6 +28,7 @@ program
 
 
 let config;
+
 if (program.user || program.password || program.database || program.server) {
     if (!(program.user && program.password && program.database && program.server)) {
         logger.error(`user, password, server, database must all be
@@ -44,21 +46,16 @@ if (program.user || program.password || program.database || program.server) {
 } else {
     config = JSON.parse(fs.readFileSync(program.config, 'utf-8'));
 }
-const configDetail = {
-    options: {
-        encrypt: true
-    },
-    useUTC: false,
-    pool: {
-        max: 10,
-        min: 0,
-        idleTimeoutMillis: 30000
-    }
-};
 
-Object.assign(config, configDetail);
+
+
 server.use(cors());
-createRoutes(server);
-server.listen(8080, function () {
-    logger.info(server.name + ' listening at ' + server.url);
+server.use(express.json());
+createRoutes(server, config);
+server.listen(8080, function (err) {
+    if(err) {
+        console.log(err);
+        return;
+    }
+    console.log(server.name + ' listening at ' + '8080');
 });
