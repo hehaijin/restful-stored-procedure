@@ -44,12 +44,12 @@ function sqlWorker(pool) {
      */
    this.getDefinitions=  async function() {
 
-        return executeSQLQuery('select * \n' +
+        return this.executeSQLQuery('select * \n' +
             '  from information_schema.routines \n' +
             ' where routine_type = \'PROCEDURE\'')
             .then(res => res.recordset)
             .then(routines => {
-                const pms = routines.map(routine => getProcedureParameters(routine.ROUTINE_SCHEMA, routine.ROUTINE_NAME));
+                const pms = routines.map(routine => this.getProcedureParameters(routine.ROUTINE_SCHEMA, routine.ROUTINE_NAME));
                 return Promise.all(pms)
             })
             //this is just to convert the original array into a object format.
@@ -70,7 +70,7 @@ function sqlWorker(pool) {
     
    this.getProcedureParameters=  async function(schema, proName) {
 
-        return executeSQLQuery('SELECT * FROM INFORMATION_SCHEMA.PARAMETERS where SPECIFIC_SCHEMA=  \'' + schema + '\'and SPECIFIC_NAME= \'' + proName + '\'')
+        return this.executeSQLQuery('SELECT * FROM INFORMATION_SCHEMA.PARAMETERS where SPECIFIC_SCHEMA=  \'' + schema + '\'and SPECIFIC_NAME= \'' + proName + '\'')
             .then(result => {
                 debug(proName);
                 const params = {};

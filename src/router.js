@@ -13,7 +13,28 @@ const logger = require('./logger');
 const debug = require('debug')('ws:router');
 const getConnectionPool= require('./db');
 
+
+/**
+ * middleware to check request format
+ * @param {} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+const checkRequestFormat= function(req, res,next){
+    if(!req.body.parameters) {
+        res.send('Format not correst! Must have parameters in request body!')
+        return;
+    }
+    next();
+}
+
+
+
+
+
 async function createRoutes(server, config) {
+    server.use(checkRequestFormat);
+
     console.log('generating routes');
     const pool= await getConnectionPool(config);
     const sqlWorker = new SQLWorker(pool);
@@ -26,7 +47,6 @@ async function createRoutes(server, config) {
             server.post('/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
                 var params = req.body.parameters;
                 debug("P1 - parameters for prosedure %O", params);
-                params.proc = procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME;
                 // debug('%O', req.body);
                 sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME ,params).then(result => {
                     if (result.recordsets.length === 1) res.send(result.recordset);
