@@ -8,14 +8,14 @@
  * 3, generate routes from procedures.
  *
  */
+
 const logger = require('winston');
 const debug = require('debug')('ws:router');
-const sqlWorker = require('./sqlWorker');
-const getDefinitions = require('./procedureDefinition');
+const  getConnectionPool= require('./db');
 
-
-async function createRoutes(server) {
-    const definitions = await getDefinitions();
+async function createRoutes(server, config) {
+    const pool= await getConnectionPool(config);
+    const sqlWorker = require('./sqlWorker')(pool);
     sqlWorker.executeSQLQuery('select * \n' +
         '  from information_schema.routines \n' +
         ' where routine_type = \'PROCEDURE\'')
@@ -27,7 +27,7 @@ async function createRoutes(server) {
                 debug("P1 - parameters for prosedure %O", params);
                 params.proc = procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME;
                 // debug('%O', req.body);
-                sqlWorker.executeProcedure(params, definitions).then(result => {
+                sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME ,params).then(result => {
                     if (result.recordsets.length === 1) res.send(result.recordset);
                     else res.send(result.recordsets);
                     debug("P2- results returned from database ", JSON.stringify(result).substring(0, 100));
