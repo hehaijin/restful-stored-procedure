@@ -6,10 +6,9 @@ const express = require('express');
 const cors = require('cors');
 const server = express();
 const createRoutes = require('../index');
-const logger= require('winston');
+const logger= require('../src/logger');
 
-
-console.log("starting");
+logger.info("starting");
 
 //import {Command} from 'commander';
 //const program = new Command();
@@ -48,14 +47,14 @@ if (program.user || program.password || program.database || program.server) {
 }
 
 
-
+console.log(config);
 server.use(cors());
 server.use(express.json());
-createRoutes(server, config);
+createRoutes(server, config).catch(err=> console.log(err));
 server.listen(8080, function (err) {
     if(err) {
         console.log(err);
         return;
     }
-    console.log(server.name + ' listening at ' + '8080');
+    logger.info(server.name + ' listening at ' + '8080');
 });

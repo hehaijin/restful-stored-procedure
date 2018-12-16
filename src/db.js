@@ -1,5 +1,5 @@
 'use strict';
-const logger = require('winston');
+const logger = require('./logger');
 const debug = require('debug')('ws:db');
 const sql = require('mssql');
 
@@ -24,9 +24,11 @@ async function getConnectionPool(config) {
     Object.assign(config, configDetail);
     try {
         let pool = await sql.connect(config);
+        console.log("connecting to server");
         logger.info('connecting to ' + config.server);
         return pool;
     } catch (err) {
+        console.log(err);
         logger.error(err);
     }
 }

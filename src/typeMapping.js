@@ -1,55 +1,53 @@
 const sql = require('mssql');
-const sqlWorker = require('./sqlWorker');
-const logger = require('winston');
 const debug = require('debug')('ws:procedureDefinition');
 
 
 const typeMapping = {
-    // totally 33 types. As defined in:
+    // totally 33 sql. As defined in:
     // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/96f1ee52c
-    // 61c5072b31c7d9dafd84aa9b5b2534c/types/mssql/index.d.ts
+    // 61c5072b31c7d9dafd84aa9b5b2534c/sql/mssql/index.d.ts
     // left side is from database, the data_type field in information.parameters table.
     // right side is type definition in mssql.
+    // 8 numeric sql
 
-    // 8 numeric types
-    int: TYPES.Int,
-    numeric: TYPES.Numeric,
-    bigint: TYPES.BigInt,
-    tinyint: TYPES.TinyInt,
-    smallint: TYPES.SmallInt,
-    float: TYPES.Float,
-    decimal: TYPES.Decimal,
-    real: TYPES.Real,
+    int: sql.Int,
+    numeric: sql.Numeric,
+    bigint: sql.BigInt,
+    tinyint: sql.TinyInt,
+    smallint: sql.SmallInt,
+    float: sql.Float,
+    decimal: sql.Decimal,
+    real: sql.Real,
 
-    varchar: TYPES.VarChar,
-    bit: TYPES.Bit,
-    char: TYPES.Char,
+    varchar: sql.VarChar,
+    bit: sql.Bit,
+    char: sql.Char,
 
-    nvarchar: TYPES.NVarChar,
-    varbinary: TYPES.VarBinary,
-    text: TYPES.Text,
+    nvarchar: sql.NVarChar,
+    varbinary: sql.VarBinary,
+    text: sql.Text,
 
-    // date time types
-    datetime: TYPES.DateTime,
-    datetime2: TYPES.DateTime2,
-    datetimeoffset: TYPES.DateTimeOffset,
-    smalldatetime: TYPES.SmallDateTime,
-    time: TYPES.Time,
-    date: TYPES.Date,
+    // date time sql
+    datetime: sql.DateTime,
+    datetime2: sql.DateTime2,
+    datetimeoffset: sql.DateTimeOffset,
+    smalldatetime: sql.SmallDateTime,
+    time: sql.Time,
+    date: sql.Date,
 
-    uniqueidentifier: TYPES.UniqueIdentifier,
-    smallmoney: TYPES.SmallMoney,
-    money: TYPES.Money,
-    binary: TYPES.Binary,
-    image: TYPES.Image,
-    xml: TYPES.Xml,
-    nchar: TYPES.NChar,
-    ntext: TYPES.NText,
-    tvp: TYPES.TVP,
-    udt: TYPES.UDT,
-    geography: TYPES.Geography,
-    geometry: TYPES.Geometry,
-    variant: TYPES.Variant
+    uniqueidentifier: sql.UniqueIdentifier,
+    smallmoney: sql.SmallMoney,
+    money: sql.Money,
+    binary: sql.Binary,
+    image: sql.Image,
+    xml: sql.Xml,
+    nchar: sql.NChar,
+    ntext: sql.NText,
+    tvp: sql.TVP,
+    udt: sql.UDT,
+    geography: sql.Geography,
+    geometry: sql.Geometry,
+    variant: sql.Variant
 }
 
 module.exports = typeMapping;

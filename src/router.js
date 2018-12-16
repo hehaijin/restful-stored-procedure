@@ -1,5 +1,5 @@
 'use strict';
-
+const SQLWorker= require('./sqlWorker');
 
 /**
  * stpes:
@@ -9,13 +9,14 @@
  *
  */
 
-const logger = require('winston');
+const logger = require('./logger');
 const debug = require('debug')('ws:router');
-const  getConnectionPool= require('./db');
+const getConnectionPool= require('./db');
 
 async function createRoutes(server, config) {
+    console.log('generating routes');
     const pool= await getConnectionPool(config);
-    const sqlWorker = require('./sqlWorker')(pool);
+    const sqlWorker = new SQLWorker(pool);
     sqlWorker.executeSQLQuery('select * \n' +
         '  from information_schema.routines \n' +
         ' where routine_type = \'PROCEDURE\'')

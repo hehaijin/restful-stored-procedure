@@ -1,18 +1,17 @@
 'use strict';
 
-const logger = require('winston');
+const logger = require('./logger');
 const debug = require('debug')('ws:sqlWorker');
-const conn = require('./db.js');
 const mssql = require('mssql');
 const typeMapping = require('./typeMapping');
 
-async function SqlWoker(pool) {
+function sqlWorker(pool) {
     /**
      * params: your parameters for the procedure; example: { id: xx, clientId: xx2}
      * procedureDefinition: 
      */
-    const procedureDefinition = await getDefinitions(pool);
     this.executeProcedure = async function (proc, params) {
+        const procedureDefinition = await this.getDefinitions(pool);
         debug("execute procedure started");
         const request = new mssql.Request(pool);
         debug("P1: paramaters %O", params);
@@ -30,6 +29,7 @@ async function SqlWoker(pool) {
         return request.execute(proc);
     };
 
+
     /**
      * sqlQuery: string; example: select * from dbo.test
      */
@@ -39,7 +39,10 @@ async function SqlWoker(pool) {
 
     }
 
-    async function getDefinitions() {
+    /**
+     * a function that get definitions of all procedures.
+     */
+   this.getDefinitions=  async function() {
 
         return executeSQLQuery('select * \n' +
             '  from information_schema.routines \n' +
@@ -65,7 +68,7 @@ async function SqlWoker(pool) {
     
     }
     
-    function getProcedureParameters(schema, proName) {
+   this.getProcedureParameters=  async function(schema, proName) {
 
         return executeSQLQuery('SELECT * FROM INFORMATION_SCHEMA.PARAMETERS where SPECIFIC_SCHEMA=  \'' + schema + '\'and SPECIFIC_NAME= \'' + proName + '\'')
             .then(result => {
@@ -95,6 +98,8 @@ async function SqlWoker(pool) {
         let query = 'select * from ' + table + 'where  ';
         return request.query(query);
     }
+
+
 
 }
 module.exports = sqlWorker;
