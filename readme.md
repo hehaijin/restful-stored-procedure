@@ -1,12 +1,7 @@
 # Restful-Stored-Procedure
-## for SQL Server(TSQL)
+## For SQL Server(TSQL)
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
-
-Libraries like Sandman that automatically restify databases usually do not include stored procedures, which is the purpose of this package.
-
-The package will provide an easy API for accessing stored procedures in a SQL Server database.
-
 
 
 # Usage
@@ -61,7 +56,11 @@ create a config.json file with contents
 Run the command
 
 	rest-sp -f path/to/config.json -p httpport
-	
+
+or simply if you put config.json in root folder and use port 8080.
+
+    rest-sp
+
 A simeple express server is set up to receive restiful API calls.
 
 
@@ -78,7 +77,7 @@ Execute a stored procedure with given parameters.
 ### Features to be added.	
 
 ##### Logging: 
- log every request, result with morgan.
+ log every request, result.
  log detailed error info.
  
 ##### Error:
