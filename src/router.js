@@ -22,7 +22,8 @@ const getConnectionPool= require('./db');
  */
 const checkRequestFormat= function(req, res,next){
     if(!req.body.parameters) {
-        res.send('Format not correst! Must have parameters in request body!')
+        res.status(504);
+        res.send('Format not correst! POST requests must have \'parameters\' key in request body!')
         return;
     }
     next();
@@ -33,18 +34,20 @@ const checkRequestFormat= function(req, res,next){
 
 
 async function createRoutes(server, config) {
-    server.use(checkRequestFormat);
+    server.post('/sp/*',checkRequestFormat);
 
     console.log('generating routes');
     const pool= await getConnectionPool(config);
     const sqlWorker = new SQLWorker(pool);
+    const allRoutes=[];
     sqlWorker.executeSQLQuery('select * \n' +
         '  from information_schema.routines \n' +
         ' where routine_type = \'PROCEDURE\'')
         .then(res => res.recordset)
         .then(procedures => procedures.forEach(procedure => {
-            logger.info('/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
-            server.post('/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
+            // logger.info('/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
+            allRoutes.push(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
+            server.post('/sp/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
                 var params = req.body.parameters;
                 debug("P1 - parameters for prosedure %O", params);
                 // debug('%O', req.body);
@@ -94,7 +97,11 @@ async function createRoutes(server, config) {
                 }
             )
 
-        })
+        });
+
+        server.get('/sp/list', (req,res,next)=>{
+            res.send(allRoutes);
+        });    
 
 }
 

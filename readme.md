@@ -2,6 +2,7 @@
 ### For SQL Server (TSQL).
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
+
 [![npm version](https://badge.fury.io/js/restful-stored-procedure.svg)](https://badge.fury.io/js/restful-stored-procedure)
 [![Build Status](https://travis-ci.com/hehaijin/restful-stored-procedure.svg?branch=master)](https://travis-ci.com/hehaijin/restful-stored-procedure)
 
@@ -69,13 +70,15 @@ An Express server is set up to receive restiful API calls.
 
 
 # APIs: 
+Execute a stored procedure with given parameters.
 ```
-    POST /schema.procedureName
+    POST /sp/schema.procedureName
     Json body: 
     {"parameters": {"param1": value1, "param2": value2  } } 
 ```    
-Execute a stored procedure with given parameters.
-	
-  
+List all available stored procedure	
+```
+    GET /sp/list
+``` 
 
 
