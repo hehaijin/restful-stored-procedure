@@ -9,13 +9,7 @@ The package will provide an easy API for accessing stored procedures in a SQL Se
 
 
 
-### How to run the package
-#### Install globally
-```
-npm install restful-stored-procedure -g
-```
-
-## Usage
+# Usage
 
 ## Use as a library 
 First install the package.
