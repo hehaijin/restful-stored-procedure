@@ -1,5 +1,5 @@
 # Restful-Stored-Procedure
-## For SQL Server(TSQL)
+## Right now supports SQL Server (TSQL) only.
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
 
@@ -37,7 +37,7 @@ Done.
 You can now access the database with restiful API at port 8080.
 
 
-##  Use as commandline program.
+##  Use as a command line program.
 First install the package globally.
 
 ```
@@ -73,17 +73,5 @@ A simeple express server is set up to receive restiful API calls.
 Execute a stored procedure with given parameters.
 	
   
-
-### Features to be added.	
-
-##### Logging: 
- log every request, result.
- log detailed error info.
- 
-##### Error:
- 505: for database related error.
- 500: for other errors. 
-	
-	
 
 
