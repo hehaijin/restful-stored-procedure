@@ -1,4 +1,8 @@
 const expect= require('chai').expect;
-describe('mock test',()=>{
-    
+const getConnectionPool= require('../src/db');
+
+describe('getConnectionPool',()=>{
+    it('should be a function',()=>{
+        expect(getConnectionPool).to.be.a('function');
+    } );
 });

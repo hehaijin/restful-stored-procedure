@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/start.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon index.js"
+    "test": "mocha",
+    "watch": "nodemon ./bin/start.js"
   },
   "bin": {
     "rest-sp": "./bin/start.js"
