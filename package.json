@@ -1,6 +1,6 @@
 {
   "name": "restful-stored-procedure",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "",
   "main": "index.js",
   "scripts": {
