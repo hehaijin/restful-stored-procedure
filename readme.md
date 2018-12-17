@@ -1,12 +1,10 @@
 # Restful-Stored-Procedure
-## Right now supports SQL Server (TSQL) only.
+### For SQL Server (TSQL).
 
 This project is to automatically provide restful API for stored procedures in a SQL Server database.
 
 
-# Usage
-
-## Use as a library 
+# Use as a library 
 First install the package.
 ```
 npm install restful-stored-procedure 
@@ -37,7 +35,7 @@ Done.
 You can now access the database with restiful API at port 8080.
 
 
-##  Use as a command line program.
+# Use as a command line program.
 First install the package globally.
 
 ```
@@ -64,7 +62,7 @@ or simply if you put config.json in root folder and use port 8080.
 A simeple express server is set up to receive restiful API calls.
 
 
-## APIs: 
+# APIs: 
 ```
     POST /schema.procedureName
     Json body: 
