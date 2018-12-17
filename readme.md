@@ -19,6 +19,7 @@ const server = express();
 
 // Here add your own middle ware and other routes if needed.
 
+// Create config object.
 const config= {
     "user": "user",
     "password": "password",
@@ -27,6 +28,7 @@ const config= {
     "port": 1433
 };
 
+// Call createRoutes with server and the config.
 createRoutes(server, config);
 
 server.listen(8080, ()=>{
@@ -59,11 +61,11 @@ Run the command
 
 	rest-sp -f path/to/config.json -p httpport
 
-or simply if you put config.json in root folder and use port 8080.
+or if you put config.json in root folder and use port 8080, simply:
 
     rest-sp
 
-A simeple express server is set up to receive restiful API calls.
+An Express server is set up to receive restiful API calls.
 
 
 # APIs: 

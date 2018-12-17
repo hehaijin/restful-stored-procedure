@@ -49,7 +49,7 @@ if (program.user || program.password || program.database || program.server) {
 
 console.log(config);
 server.use(cors());
-server.use(express.json());
+server.use(express.json({type: '*/*'}));
 createRoutes(server, config).catch(err=> console.log(err));
 server.listen(8080, function (err) {
     if(err) {
