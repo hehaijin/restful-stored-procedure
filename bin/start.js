@@ -45,9 +45,7 @@ if (program.user || program.password || program.database || program.server) {
 } else {
     config = JSON.parse(fs.readFileSync(program.config, 'utf-8'));
 }
-
-
-console.log(config);
+logger.info('configuration: '+ JSON.stringify(config));
 server.use(cors());
 server.use(express.json({type: '*/*'}));
 createRoutes(server, config).catch(err=> console.log(err));
@@ -56,5 +54,5 @@ server.listen(8080, function (err) {
         console.log(err);
         return;
     }
-    logger.info(server.name + ' listening at ' + '8080');
+    logger.info('HTTP server'+ ' listening at ' + '8080');
 });

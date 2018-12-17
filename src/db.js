@@ -24,8 +24,7 @@ async function getConnectionPool(config) {
     Object.assign(config, configDetail);
     try {
         let pool = await sql.connect(config);
-        console.log("connecting to server");
-        logger.info('connecting to ' + config.server);
+        logger.info('Connectted to database server: ' + config.server);
         return pool;
     } catch (err) {
         console.log(err);

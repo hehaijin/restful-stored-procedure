@@ -1,7 +1,4 @@
 const sql = require('mssql');
-const debug = require('debug')('ws:procedureDefinition');
-
-
 const typeMapping = {
     // totally 33 sql. As defined in:
     // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/96f1ee52c
