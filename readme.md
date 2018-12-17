@@ -9,13 +9,15 @@ First install the package.
 ```
 npm install restful-stored-procedure 
 ```
- code sample
+ Code example:
 
 ```
 const express = require('express');
 const createRoutes = require('restful-stored-procedure');
 const server = express();
+
 // Here add your own middle ware and other routes if needed.
+
 const config= {
     "user": "user",
     "password": "password",
@@ -25,6 +27,7 @@ const config= {
 };
 
 createRoutes(server, config);
+
 server.listen(8080, ()=>{
    console.log('Server start listing at port 8080');
 });
