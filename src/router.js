@@ -39,6 +39,7 @@ async function createRoutes(server, config, schemas) {
     logger.info('generating routes');
     const pool = await getConnectionPool(config);
     const sqlWorker = new SQLWorker(pool);
+    const definitions= await sqlWorker.getDefinitions(); 
     const allRoutes = [];
     sqlWorker.executeSQLQuery('select * \n' +
         '  from information_schema.routines \n' +
@@ -62,6 +63,19 @@ async function createRoutes(server, config, schemas) {
                     res.send(error.message);
                 });
                 //  return next();
+            });
+            server.get('/sp/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, (req, res, next) => {
+                const def = definitions[procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME];
+                // a little performance hit here for calculate it every time.
+                const convert = {};
+                for (const key of Object.keys(def)) {
+                    for (const type of Object.keys(typeMapping)) {
+                        if (typeMapping[type] === def[key]) {
+                            convert[key] = type;
+                        }
+                    }
+                }
+                res.send(convert);
             });
         }))
         .then(() => {

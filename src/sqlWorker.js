@@ -11,7 +11,7 @@ function sqlWorker(pool) {
      * procedureDefinition: 
      */
     this.executeProcedure = async function (proc, params) {
-        const procedureDefinition = await this.getDefinitions(pool);
+        const procedureDefinition = await this.getDefinitions();
         debug("execute procedure started");
         const request = new mssql.Request(pool);
         debug("P1: paramaters %O", params);
@@ -41,6 +41,7 @@ function sqlWorker(pool) {
 
     /**
      * a function that get definitions of all procedures.
+     * promise
      */
    this.getDefinitions=  async function() {
 
@@ -66,7 +67,7 @@ function sqlWorker(pool) {
     
             });
     
-    }
+    };
     
    this.getProcedureParameters=  async function(schema, proName) {
 
@@ -98,7 +99,6 @@ function sqlWorker(pool) {
         let query = 'select * from ' + table + 'where  ';
         return request.query(query);
     }
-
 
 
 }
