@@ -33,7 +33,7 @@ const checkRequestFormat = function (req, res, next) {
 
 
 
-async function createRoutes(server, config) {
+async function createRoutes(server, config, schemas) {
     server.post('/sp/*', checkRequestFormat);
 
     logger.info('generating routes');
@@ -46,6 +46,7 @@ async function createRoutes(server, config) {
         .then(res => res.recordset)
         .then(procedures => procedures.forEach(procedure => {
             // logger.info('/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
+            if(schemas && !schemas.includes(procedure.ROUTINE_SCHEMA ) ) return;
             allRoutes.push(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
             server.post('/sp/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
                 var params = req.body.parameters;
@@ -60,9 +61,7 @@ async function createRoutes(server, config) {
                     debug("P3- error received", error);
                     res.send(error.message);
                 });
-
                 //  return next();
-
             });
         }))
         .then(() => {

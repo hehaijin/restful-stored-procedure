@@ -41,6 +41,11 @@ Done.
 
 You can now access the database with restiful API at port 8080.
 
+It's also possible to only generate routes for certain schema by including a third argument to createRoutes.
+
+```
+createRoutes(server, config, ['dbo','web']);
+```
 
 # Use as a command line program.
 First install the package globally.
