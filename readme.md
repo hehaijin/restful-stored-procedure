@@ -81,6 +81,11 @@ Execute a stored procedure with given parameters.
     Json body: 
     {"parameters": {"param1": value1, "param2": value2  } } 
 ```    
+Get detailed argument information about a stored procedure
+```
+    GET /sp/schema.procedureName
+``` 
+
 List all available stored procedure	
 ```
     GET /sp/list
