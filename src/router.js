@@ -10,7 +10,6 @@ const SQLWorker = require('./sqlWorker');
  */
 
 const logger = require('./logger');
-const debug = require('debug')('ws:router');
 const getConnectionPool = require('./db');
 
 
@@ -51,15 +50,11 @@ async function createRoutes(server, config, schemas) {
             allRoutes.push(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
             server.post('/sp/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
                 var params = req.body.parameters;
-                debug("P1 - parameters for prosedure %O", params);
-                // debug('%O', req.body);
                 sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, params).then(result => {
                     if (result.recordsets.length === 1) res.send(result.recordset);
                     else res.send(result.recordsets);
-                    debug("P2- results returned from database ", JSON.stringify(result).substring(0, 100));
                 }).catch(error => {
                     res.status(503);
-                    debug("P3- error received", error);
                     res.send(error.message);
                 });
                 //  return next();
