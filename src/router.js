@@ -35,10 +35,12 @@ const checkRequestFormat = function (req, res, next) {
 async function createRoutes(server, config, schemas) {
     server.post('/sp/*', checkRequestFormat);
 
-    logger.info('generating routes');
+    logger.info('Generating routes');
     const pool = await getConnectionPool(config);
     const sqlWorker = new SQLWorker(pool);
-    const definitions= await sqlWorker.getDefinitions(); 
+    const definitions= await sqlWorker.getDefinitions().catch( err => {logger.error('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
+	logger.error(err);}
+	); 
     const allRoutes = [];
     sqlWorker.executeSQLQuery('select * \n' +
         '  from information_schema.routines \n' +
@@ -75,7 +77,12 @@ async function createRoutes(server, config, schemas) {
         }))
         .then(() => {
             logger.info('Routes successfully created for ' + allRoutes.length + ' stored procedures');
-        });
+        },
+		(err)=>{
+			logger.error('Failed to create routes for some routes');
+			logger.error(err.message);
+		}
+		);
 
 
     sqlWorker

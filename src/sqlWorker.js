@@ -71,7 +71,7 @@ function sqlWorker(pool) {
                 for (let record of result.recordset) {
                     attr[record.PARAMETER_NAME.substring(1)] = typeMapping[record.DATA_TYPE];
                     if (typeMapping[record.DATA_TYPE] === undefined) {
-                        logger.error("type translation for type " + record.DATA_TYPE + " failed. please add this type to typeMapping");
+                        logger.error("type translation for type \'" + record.DATA_TYPE + "\' failed. please add this type to typeMapping");
                         throw new Error('type translation failed');
                     }
                 }
