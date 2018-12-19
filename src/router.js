@@ -11,6 +11,7 @@ const SQLWorker = require('./sqlWorker');
 
 const logger = require('./logger');
 const getConnectionPool = require('./db');
+const typeMapping= require('./typeMapping');
 
 
 /**
@@ -36,10 +37,13 @@ async function createRoutes(server, config, schemas) {
     server.post('/sp/*', checkRequestFormat);
 
     logger.info('Generating routes');
-    const pool = await getConnectionPool(config);
+    const pool = await getConnectionPool(config).catch(err=>{
+        logger.error('Failed to connect. Please check user name, password, server, database are correctly set!');
+        process.exit(1);
+    });
     const sqlWorker = new SQLWorker(pool);
-    const definitions= await sqlWorker.getDefinitions().catch( err => {logger.error('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
-	logger.error(err);}
+    const definitions= await sqlWorker.getDefinitions().catch( err => {logger.warn('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
+	logger.warn(err);}
 	); 
     const allRoutes = [];
     sqlWorker.executeSQLQuery('select * \n' +
