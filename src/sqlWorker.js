@@ -3,6 +3,7 @@
 const logger = require('./logger');
 const mssql = require('mssql');
 const typeMapping = require('./typeMapping');
+const queryGenerator= require('./queryGenerator');
 
 function sqlWorker(pool) {
     /**
@@ -13,11 +14,10 @@ function sqlWorker(pool) {
         const procedureDefinition = await this.getDefinitions();
         const request = new mssql.Request(pool);
         for (var key in params) {
-            if (procedureDefinition[params.proc][key] === undefined) {
-                logger.error("did not find the corresponding type for input key " + key);
-                throw new Error("input key not found");
+            if (procedureDefinition[proc][key] === undefined) {
+                throw new Error(`Input parameter ${key} not found for procedure ${proc}`);
             }
-            request.input(key, procedureDefinition[params.proc][key], params[key]);
+            request.input(key, procedureDefinition[proc][key], params[key]);
         }
         return request.execute(proc);
     };
@@ -38,9 +38,7 @@ function sqlWorker(pool) {
      */
    this.getDefinitions=  async function() {
 
-        return this.executeSQLQuery('select * \n' +
-            '  from information_schema.routines \n' +
-            ' where routine_type = \'PROCEDURE\'')
+        return this.executeSQLQuery(queryGenerator.getAllRoutines())
             .then(res => res.recordset)
             .then(routines => {
                 const pms = routines.map(routine => this.getProcedureParameters(routine.ROUTINE_SCHEMA, routine.ROUTINE_NAME));
@@ -64,14 +62,15 @@ function sqlWorker(pool) {
     
    this.getProcedureParameters=  async function(schema, proName) {
 
-        return this.executeSQLQuery('SELECT * FROM INFORMATION_SCHEMA.PARAMETERS where SPECIFIC_SCHEMA=  \'' + schema + '\'and SPECIFIC_NAME= \'' + proName + '\'')
+        return this.executeSQLQuery(queryGenerator.getParametersForRoutine(schema,proName))
             .then(result => {
                 const params = {};
                 const attr = {};
                 for (let record of result.recordset) {
                     attr[record.PARAMETER_NAME.substring(1)] = typeMapping[record.DATA_TYPE];
                     if (typeMapping[record.DATA_TYPE] === undefined) {
-                        logger.warn("type translation for type \'" + record.DATA_TYPE + "\' failed. please add this type to typeMapping");
+                        logger.warn("type translation for type \'" + record.DATA_TYPE + 
+                        "\' failed. please add this type to typeMapping");
                         attr[record.PARAMETER_NAME.substring(1)]= record.DATA_TYPE;
                         // throw new Error('type translation failed');
                     }

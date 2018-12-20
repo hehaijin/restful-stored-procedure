@@ -1,20 +1,17 @@
 #!/usr/bin/env node
 'use strict'
-const fs=require('fs');
+const fs = require('fs');
 const program = require('commander');
 const express = require('express');
 const cors = require('cors');
 const server = express();
 const createRoutes = require('../index');
-const logger= require('../src/logger');
+const logger = require('../src/logger');
 
-logger.info("starting");
-
-//import {Command} from 'commander';
-//const program = new Command();
+logger.info("Starting progam");
 
 program
-    .version('0.1.0')
+    .version('0.6.0')
     // capitalize options are different set from lowercase options
     .option('-U, --user <username>', 'user name')
     .option('-P, --password <password>', 'password')
@@ -22,7 +19,7 @@ program
     .option('-D, --database <database>', 'database')
     .option('-N, --databaseport <port>', 'database port', 1433)
     .option('-c, --config <filename>', 'config file', 'config.json')
-    .option('-p, --port <portnumber>', 'http port', 80)
+    .option('-p, --port <portnumber>', 'http port', 8080)
     .parse(process.argv);
 
 
@@ -32,7 +29,6 @@ if (program.user || program.password || program.database || program.server) {
     if (!(program.user && program.password && program.database && program.server)) {
         logger.error(`user, password, server, database must all be
              provided in commandline when not using a config file!`);
-        throw new Error('username, password, server, database are all required');
     } else {
         config = {
             user: program.user,
@@ -43,16 +39,26 @@ if (program.user || program.password || program.database || program.server) {
         };
     }
 } else {
+    try{
     config = JSON.parse(fs.readFileSync(program.config, 'utf-8'));
-}
-logger.info('configuration: '+ JSON.stringify(config));
-server.use(cors());
-server.use(express.json({type: '*/*'}));
-createRoutes(server, config).catch(err=> console.log(err));
-server.listen(8080, function (err) {
-    if(err) {
-        console.log(err);
-        return;
+    }catch(err){
+        logger.error("Failed to read file");
+        logger.error(err.message);
     }
-    logger.info('HTTP server'+ ' listening at ' + '8080');
+
+}
+
+logger.info('Configuration: ' + JSON.stringify(config));
+server.use(cors());
+server.use(express.json({ type: '*/*' }));
+createRoutes(server, config).catch(err => {
+    logger.error(err.message);
+    process.exit(1);
+});
+server.listen(program.port, function (err) {
+    if (err) {
+        logger.error(err.message);
+        process.exit(1);
+    }
+    logger.info('HTTP server' + ' listening at ' + program.port);
 });

@@ -12,6 +12,7 @@ const SQLWorker = require('./sqlWorker');
 const logger = require('./logger');
 const getConnectionPool = require('./db');
 const typeMapping= require('./typeMapping');
+const queryGenerator= require('./queryGenerator');
 
 
 /**
@@ -35,29 +36,27 @@ const checkRequestFormat = function (req, res, next) {
 
 async function createRoutes(server, config, schemas) {
     server.post('/sp/*', checkRequestFormat);
-
-    logger.info('Generating routes');
     const pool = await getConnectionPool(config).catch(err=>{
-        logger.error('Failed to connect. Please check user name, password, server, database are correctly set!');
-        process.exit(1);
+        // logger.error('Failed to connect. Please check user name, password, server, database are correctly set!');
+        throw new Error('Failed to connect. Please check user name, password, server, database are correctly set! ')
     });
     const sqlWorker = new SQLWorker(pool);
     const definitions= await sqlWorker.getDefinitions().catch( err => {logger.warn('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
 	logger.warn(err);}
 	); 
     const allRoutes = [];
-    sqlWorker.executeSQLQuery('select * \n' +
-        '  from information_schema.routines \n' +
-        ' where routine_type = \'PROCEDURE\'')
+    sqlWorker.executeSQLQuery(queryGenerator.getAllRoutines())
         .then(res => res.recordset)
         .then(procedures => procedures.forEach(procedure => {
             // logger.info('/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
             if(schemas && !schemas.includes(procedure.ROUTINE_SCHEMA ) ) return;
             allRoutes.push(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
             server.post('/sp/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
-                var params = req.body.parameters;
+                var params = req.body.parameters; 
                 sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, params).then(result => {
+                    // returns one recordset
                     if (result.recordsets.length === 1) res.send(result.recordset);
+                    // returns multiple recordset; this happens when it has multiple select;
                     else res.send(result.recordsets);
                 }).catch(error => {
                     res.status(503);
@@ -87,39 +86,6 @@ async function createRoutes(server, config, schemas) {
 			logger.error(err.message);
 		}
 		);
-
-
-    sqlWorker
-        .executeSQLQuery('SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE=\'BASE TABLE\'')
-        .then(res => res.recordset)
-        .then(tables => {
-            tables.forEach(
-                table => {
-                    // add a route for displaying all rows.
-                    // path:  /schema.table
-
-                    server.get('/' + table.TABLE_SCHEMA + '.' + table.TABLE_NAME, function (req, res, next) {
-                        sqlWorker.executeSQLQuery('select * from ' + table.TABLE_SCHEMA + '.' + table.TABLE_NAME)
-                            .then(result => res.send(result.recordset));
-                        return next();
-
-                    });
-                    // path: schema dbo can be ommitted
-                    if (table.TABLE_SCHEMA === 'dbo') {
-                        server.get('/' + table.TABLE_NAME, function (req, res, next) {
-                            sqlWorker.executeSQLQuery('select * from ' + table.TABLE_SCHEMA + '.' + table.TABLE_NAME)
-                                .then(result => res.send(result.recordset)).catch(error => {
-                                    logger.error(error);
-                                    res.send(error);
-                                });
-                            return next();
-                        });
-                    }
-
-                }
-            )
-
-        });
 
     server.get('/sp/list', (req, res, next) => {
         res.send(allRoutes);
