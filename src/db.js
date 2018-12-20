@@ -1,6 +1,5 @@
 'use strict';
 const logger = require('./logger');
-const debug = require('debug')('ws:db');
 const sql = require('mssql');
 
 /**

@@ -10,8 +10,8 @@ const SQLWorker = require('./sqlWorker');
  */
 
 const logger = require('./logger');
-const debug = require('debug')('ws:router');
 const getConnectionPool = require('./db');
+const typeMapping= require('./typeMapping');
 
 
 /**
@@ -36,10 +36,15 @@ const checkRequestFormat = function (req, res, next) {
 async function createRoutes(server, config, schemas) {
     server.post('/sp/*', checkRequestFormat);
 
-    logger.info('generating routes');
-    const pool = await getConnectionPool(config);
+    logger.info('Generating routes');
+    const pool = await getConnectionPool(config).catch(err=>{
+        logger.error('Failed to connect. Please check user name, password, server, database are correctly set!');
+        process.exit(1);
+    });
     const sqlWorker = new SQLWorker(pool);
-    const definitions= await sqlWorker.getDefinitions(); 
+    const definitions= await sqlWorker.getDefinitions().catch( err => {logger.warn('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
+	logger.warn(err);}
+	); 
     const allRoutes = [];
     sqlWorker.executeSQLQuery('select * \n' +
         '  from information_schema.routines \n' +
@@ -51,15 +56,11 @@ async function createRoutes(server, config, schemas) {
             allRoutes.push(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME);
             server.post('/sp/' + procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, function (req, res, next) {
                 var params = req.body.parameters;
-                debug("P1 - parameters for prosedure %O", params);
-                // debug('%O', req.body);
                 sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, params).then(result => {
                     if (result.recordsets.length === 1) res.send(result.recordset);
                     else res.send(result.recordsets);
-                    debug("P2- results returned from database ", JSON.stringify(result).substring(0, 100));
                 }).catch(error => {
                     res.status(503);
-                    debug("P3- error received", error);
                     res.send(error.message);
                 });
                 //  return next();
@@ -80,7 +81,12 @@ async function createRoutes(server, config, schemas) {
         }))
         .then(() => {
             logger.info('Routes successfully created for ' + allRoutes.length + ' stored procedures');
-        });
+        },
+		(err)=>{
+			logger.error('Failed to create routes for some routes');
+			logger.error(err.message);
+		}
+		);
 
 
     sqlWorker
