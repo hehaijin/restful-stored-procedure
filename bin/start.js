@@ -5,7 +5,7 @@ const program = require('commander');
 const express = require('express');
 const cors = require('cors');
 const server = express();
-const createRoutes = require('../index');
+const {createRoutes} = require('../index');
 const logger = require('../src/logger');
 
 logger.info("Starting progam");
