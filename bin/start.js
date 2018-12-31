@@ -51,10 +51,20 @@ if (program.user || program.password || program.database || program.server) {
 logger.info('Configuration: ' + JSON.stringify(config));
 server.use(cors());
 server.use(express.json({ type: '*/*' }));
+
+server.use( (req,res,next)=>{
+    console.log(req.query);
+    next();
+
+});
+
 createRoutes(server, config).catch(err => {
     logger.error(err.message);
     process.exit(1);
 });
+
+
+
 server.listen(program.port, function (err) {
     if (err) {
         logger.error(err.message);
