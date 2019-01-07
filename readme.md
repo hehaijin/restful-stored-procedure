@@ -11,11 +11,13 @@ First install the package.
 ```
 npm install restful-stored-procedure 
 ```
- Code example:
+ Code example: 
+ 
+ Note: a little change from previous version.
 
 ```
 const express = require('express');
-const createRoutes = require('restful-stored-procedure');
+const {createRoutes} = require('restful-stored-procedure');
 const server = express();
 
 // Here add your own middle ware and other routes if needed.
@@ -91,4 +93,17 @@ List all available stored procedure
     GET /sp/list
 ``` 
 
+
+# Use as a Middleware
+For a more fine grained control.
+
+Code example
+```
+    const {StoredProcedureHandler} = require('restful-stored-procedure');
+    const spHandler= new StoredProcedureHandler(config);
+    app.post('/your-route', spHandler.handle(schema, procedureName);
+
+```
+
+Now the stored procedure is availabe on the specific route. 
 

@@ -11,7 +11,7 @@ function sqlWorker(pool) {
      * procedureDefinition: 
      */
     this.executeProcedure = async function (proc, params) {
-        const procedureDefinition = await this.getDefinitions();
+        const procedureDefinition = await this.definitions;
         const request = new mssql.Request(pool);
         for (var key in params) {
             if (procedureDefinition[proc][key] === undefined) {
@@ -22,6 +22,7 @@ function sqlWorker(pool) {
         return request.execute(proc);
     };
 
+ 
 
     /**
      * sqlQuery: string; example: select * from dbo.test
@@ -29,7 +30,6 @@ function sqlWorker(pool) {
     this.executeSQLQuery = async function (sqlquery) {
         const request = new mssql.Request(pool);
         return request.query(sqlquery);
-
     }
 
     /**
@@ -37,7 +37,6 @@ function sqlWorker(pool) {
      * promise
      */
    this.getDefinitions=  async function() {
-
         return this.executeSQLQuery(queryGenerator.getAllRoutines())
             .then(res => res.recordset)
             .then(routines => {
@@ -55,9 +54,7 @@ function sqlWorker(pool) {
                     }
                 }
                 return result;
-    
             });
-    
     };
     
    this.getProcedureParameters=  async function(schema, proName) {
@@ -92,5 +89,8 @@ function sqlWorker(pool) {
     }
 
 
+    // as a promise so it does not need to be calculated every time. 
+    // this has to put after getDefinitions funciton.
+    this.definitions= this.getDefinitions(); 
 }
 module.exports = sqlWorker;

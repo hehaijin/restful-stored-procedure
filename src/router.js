@@ -96,69 +96,32 @@ async function createRoutes(server, config, schemas) {
 }
 
 
-async function spHandler(config) {
-    const pool = await getConnectionPool(config).catch(err => {
+
+
+ const StoredProcedureHandler =function(config) {
+    const pool = getConnectionPool(config).catch(err => {
         throw new Error('Failed to connect. Please check user name, password, server, database are correctly set! ')
     });
-    const sqlWorker = new SQLWorker(pool);
-    const definitions = await sqlWorker.getDefinitions().catch(err => {
-        logger.warn('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
-        logger.warn(err);
-    }
-    );
-    return async function spMiddleware(req, res, next) {
-        if (!req.body.parameters) {
-            res.status(504);
-            res.send('Format not correst! POST requests must have \'parameters\' key in request body!');
-            return;
-        }
-        const procedure = req.params.sq;
-        if (Object.keys(req.params) === 0 || !procedure || procedure.indexOf('.') === -1) {
-            res.status(505);
-            res.send('request must includes a param for the specified stored procedure');
-            return;
-        }
+    const sqlWorkerP = ( async function(pool){
+        const p= await pool;
+        return new SQLWorker(p);
 
-        if (!definitions.includes(procedure)) {
-            res.status(505);
-            res.send(`requested stored procedure ${procedure} is not in the database`);
-            return;
-        }
-        const schema = procedure.split('.')[0];
-        if (schemas && !schemas.includes(schema)) {
-            res.status(505);
-            res.send(`requested stored procedure's schema ${schema} is not supported.`);
-            return;
-        }
-        const parameters = req.body.parameters;
-        sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, parameters).then(result => {
-            // returns one recordset
-            if (result.recordsets.length === 1) res.send(result.recordset);
-            // returns multiple recordset; this happens when it has multiple select;
-            else res.send(result.recordsets);
-        }).catch(error => {
-            res.status(503);
-            res.send(error.message);
-        });
-    }
-}
+    })(pool);
+    const definitionsP = (async function(sqlWorkerP){
+        const sq= await sqlWorkerP;
+        return sq.getDefinitions().catch(err => {
+                logger.warn('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
+                logger.warn(err);
+            }
+        );
+    })(sqlWorkerP);
+    this.handle=  function(schema, procedureName) {
 
-
-
-async function StoredProcedureHandler(config) {
-    const pool = await getConnectionPool(config).catch(err => {
-        throw new Error('Failed to connect. Please check user name, password, server, database are correctly set! ')
-    });
-    const sqlWorker = new SQLWorker(pool);
-    const definitions = await sqlWorker.getDefinitions().catch(err => {
-        logger.warn('Something wrong happens when getting parameter definitions. but the program will proceed. The error is :');
-        logger.warn(err);
-    }
-    );
-    this.handle=  async function(schema, procedureName) {
-        const procedure = schema + '.' + procedureName;
         return async function spMiddleware(req, res, next) {
-            if (!definitions.includes(procedure)) {
+            const definitions= await definitionsP;
+            const sqlWorker= await sqlWorkerP;
+            const procedure = schema + '.' + procedureName;
+            if (!Object.keys(definitions).includes(procedure)) {
                 res.status(504);
                 res.send(`For route ${req.url}, the corresponding ${procedure} is not found in database`);
                 return;
@@ -169,7 +132,7 @@ async function StoredProcedureHandler(config) {
                 return;
             }
             const parameters = req.body.parameters;
-            sqlWorker.executeProcedure(procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME, parameters).then(result => {
+            sqlWorker.executeProcedure(schema + '.' + procedureName, parameters).then(result => {
                 // returns one recordset
                 if (result.recordsets.length === 1) res.send(result.recordset);
                 // returns multiple recordset; this happens when it has multiple select;
@@ -180,10 +143,13 @@ async function StoredProcedureHandler(config) {
             });
         }
     }
-    this.details= async function(schema, procedureNmae){
-        const procedure = schema + '.' + procedureName;
+
+    this.details=  function(schema, procedureNmae){
         return async function detailsMiddleware(req, res, next) {
-            const def = definitions[procedure.ROUTINE_SCHEMA + '.' + procedure.ROUTINE_NAME];
+            const definitions= await definitionsP;
+            const sqlWorker= await sqlWorkerP;
+            const procedure = schema + '.' + procedureName;
+            const def = definitions[schema + '.' + procedureNmae];
             // a little performance hit here for calculate it every time.
             const convert = {};
             for (const key of Object.keys(def)) {
@@ -198,5 +164,8 @@ async function StoredProcedureHandler(config) {
     }
 }
 
-module.exports.createRoutes = createRoutes;
-module.exports.storedProcedureHandler = StoredProcedureHandler;
+//module.exports.createRoutes = createRoutes;
+module.exports = {
+    createRoutes,
+    StoredProcedureHandler
+}

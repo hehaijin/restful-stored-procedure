@@ -5,7 +5,7 @@ const program = require('commander');
 const express = require('express');
 const cors = require('cors');
 const server = express();
-const {createRoutes} = require('../index');
+const {createRoutes, StoredProcedureHandler} = require('../index');
 const logger = require('../src/logger');
 
 logger.info("Starting progam");
@@ -52,18 +52,10 @@ logger.info('Configuration: ' + JSON.stringify(config));
 server.use(cors());
 server.use(express.json({ type: '*/*' }));
 
-server.use( (req,res,next)=>{
-    console.log(req.query);
-    next();
-
-});
-
 createRoutes(server, config).catch(err => {
     logger.error(err.message);
     process.exit(1);
 });
-
-
 
 server.listen(program.port, function (err) {
     if (err) {
