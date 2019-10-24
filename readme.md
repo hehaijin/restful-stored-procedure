@@ -66,7 +66,10 @@ create a config.json file with contents
     "password": "password",
     "server": "server",
     "database": "your database",
-    "port": 1433
+    "port": 1433,
+     "options": {
+        "encrypt": false
+    }   
 }
 ```
 Run the command
