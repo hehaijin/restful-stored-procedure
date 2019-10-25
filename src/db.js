@@ -11,7 +11,7 @@ async function getConnectionPool(config) {
     //more database configs
     const configDetail = {
         options: {
-            encrypt: true
+            encrypt: config.options == null ? false : (config.options.encrypt == null ? false : config.options.encrypt)
         },
         useUTC: false,
         pool: {
