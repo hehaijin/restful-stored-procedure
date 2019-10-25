@@ -18,6 +18,7 @@ const express = require('express');
 const createRoutes = require('restful-stored-procedure');
 const server = express();
 
+
 // Here add your own middle ware and other routes if needed.
 
 // Create config object.
@@ -26,8 +27,13 @@ const config= {
     "password": "password",
     "server": "server",
     "database": "your database",
-    "port": 1433
+    "port": 1433,
+    "options": {
+        "encrypt": false
+    }
 };
+
+server.use(express.json());
 
 // Call createRoutes with server and the config.
 createRoutes(server, config);
@@ -60,7 +66,10 @@ create a config.json file with contents
     "password": "password",
     "server": "server",
     "database": "your database",
-    "port": 1433
+    "port": 1433,
+     "options": {
+        "encrypt": false
+    }   
 }
 ```
 Run the command
