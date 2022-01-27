@@ -24,7 +24,7 @@ const queryGenerator = require('./queryGenerator');
 const checkRequestFormat = function (req, res, next) {
     if (!req.body.parameters) {
         res.status(504);
-        res.send('Format not correst! POST requests must have \'parameters\' key in request body!')
+        res.send('Format not correct! POST requests must have \'parameters\' key in request body!')
         return;
     }
     next();
